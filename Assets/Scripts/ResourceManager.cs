@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
+using TMPro;
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
     private Dictionary<ResourceTypeSO, int> resourceAmountDictionary;
+
+    [SerializeField]
+    private TMP_Text woodResourceText;
+
+    [SerializeField]
+    private TMP_Text goldResourceText;
+
+    [SerializeField]
+    private TMP_Text stoneResourceText;
+
 
     public static ResourceManager Inst { get; private set; }
     private void Awake()
@@ -54,6 +64,28 @@ public class ResourceManager : MonoBehaviour
     public void AddResource(ResourceTypeSO resourceType, int amount)
     {
         resourceAmountDictionary[resourceType] += amount;
+        SetUI(resourceType);
         TestLogResourceAmountDictionary();
+    }
+
+    public void SetUI(ResourceTypeSO resourceType)
+    {
+        int amount = resourceAmountDictionary[resourceType];
+        
+        switch(resourceType.nameString)
+        {
+            case "Wood":
+                woodResourceText.text = $"{int.Parse(woodResourceText.text) + amount}";
+                break;
+
+            case "Gold":
+                goldResourceText.text = $"{int.Parse(goldResourceText.text) + amount}";
+                break;
+
+
+            case "Stone":
+                stoneResourceText.text = $"{int.Parse(stoneResourceText.text) + amount}";
+                break;
+        }
     }
 }
