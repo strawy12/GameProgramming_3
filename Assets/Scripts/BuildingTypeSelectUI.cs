@@ -44,12 +44,11 @@ public class BuildingTypeSelectUI : MonoBehaviour
             buildingTransformDic[buildingType] = btnTransform;
             btnTransform.name = $"{buildingType.nameString} Btn";
 
-             offsetAmount = 160f;
+            offsetAmount = 160f;
             btnTransform.GetComponent<RectTransform>().anchoredPosition = new Vector2(offsetAmount * index, 0);
             btnTransform.gameObject.SetActive(true);
 
             btnTransform.Find("Image").GetComponent<Image>().sprite = buildingType.profile;
-            btnTransform.Find("Selected").gameObject.SetActive(false);
 
             btnTransform.GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -59,6 +58,11 @@ public class BuildingTypeSelectUI : MonoBehaviour
 
             index++;
         }
+    }
+
+    private void Update()
+    {
+        UpdateActiveBuildingTypeBtn();
     }
 
     private void UpdateActiveBuildingTypeBtn()
@@ -71,7 +75,7 @@ public class BuildingTypeSelectUI : MonoBehaviour
             btnTransform.Find("Selected").gameObject.SetActive(false);
         }
         BuildingTypeSO activeBuildingType = BuildingManager.Inst.GetActiveBuildingType();
-       
+
         if (activeBuildingType == null)
         {
             arrowBtn.Find("Selected").gameObject.SetActive(true);
