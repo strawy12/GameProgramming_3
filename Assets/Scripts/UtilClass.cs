@@ -4,14 +4,26 @@ using UnityEngine;
 
 public static class UtilClass
 {
-    private static Camera mainCam;
+    private static Camera mainCamera;
     public static Vector3 GetMouseWorldPosition()
     {
-        if(mainCam == null) mainCam = Camera.main;
+        if (mainCamera == null) { mainCamera = Camera.main; }
+        Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPosition.z = 0f;
+        return mouseWorldPosition;
+    }
 
-        Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
+    public static Vector3 GetRandomDir()
+    {
+        return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+    }
 
-        return mousePos;
+    public static float GetAngleFromVector(Vector3 vec)
+    {
+        float rad = Mathf.Atan2(vec.y,vec.x);
+        float deg = rad * Mathf.Rad2Deg;
+
+        return deg;
+
     }
 }

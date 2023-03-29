@@ -1,21 +1,47 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class BuildingGhost : MonoBehaviour
 {
     private GameObject spriteGameObject;
+    private ResourceNearbyOverlay resourceNearbyOverlay;
 
     private void Awake()
     {
-        spriteGameObject = transform.Find("Sprite").gameObject;
-        Hide();
+        spriteGameObject = transform.Find("sprite").gameObject;
     }
+
     private void Start()
     {
-        BuildingManager.Inst.OnActiveBuildingTypeChanged += OnActiveBuildingTypeChanged;
+        resourceNearbyOverlay = transform.Find("ResourceNearbyOverlay").GetComponent<ResourceNearbyOverlay>();
+        Hide();
+        BuildingManager.Instance.onActiveBuildingTypeChanged += BuildingManager_onActiveBuildingTypeChanged;
+    }
+
+    private void BuildingManager_onActiveBuildingTypeChanged(object sender, BuildingManager.onActiveBuildingTypeEventArgs e)
+    {
+
+        if (e.buildingType == null)
+        {
+            resourceNearbyOverlay.Hide();
+            Hide();
+        }
+        else
+        {
+            Show(e.buildingType.sprite);
+
+            if (e.buildingType.hasResourceGeneratorData)
+            {
+                resourceNearbyOverlay.Show(e.buildingType.resourceGeneratorData);
+            }
+
+            else
+            {
+                resourceNearbyOverlay.Hide();
+            }
+        }
     }
 
     private void Update()
@@ -33,18 +59,5 @@ public class BuildingGhost : MonoBehaviour
         spriteGameObject.SetActive(true);
         spriteGameObject.GetComponent<SpriteRenderer>().sprite = ghostSprite;
     }
-    private void OnActiveBuildingTypeChanged(object sender, EventArgs e)
-    {
-        BuildingTypeSO activeBuildingType = BuildingManager.Inst.GetActiveBuildingType();
 
-        if(activeBuildingType == null )
-
-        {
-            Hide();
-        }
-        else
-        {
-            Show(activeBuildingType.profile);
-        }
-    }
 }

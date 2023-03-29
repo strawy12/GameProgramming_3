@@ -1,41 +1,40 @@
-using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class CameraHandler : MonoBehaviour
 {
-    [SerializeField]
-    private CinemachineVirtualCamera vCam;
+    [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
     private float orthographicSize;
     private float targetOrthographicSize;
-    [SerializeField]
-    private float speed = 5f;
-    [SerializeField]
-    private float minSize = 10f;
-    [SerializeField]
-    private float maxSize = 30f;
-    [SerializeField]
-    private float zoomSpeed = 5f;
+
     private void Start()
     {
-        orthographicSize = vCam.m_Lens.OrthographicSize;
+        orthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
         targetOrthographicSize = orthographicSize;
     }
-    void Update()
+    private void Update()
     {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
+        Vector3 moveDir = new Vector3(x, y).normalized;
+        float moveSpeed = 50f;
 
-        Vector3 dir = new Vector3(x, y, 0).normalized;
+        transform.position += moveDir * moveSpeed * Time.deltaTime;
 
-        transform.Translate(dir * speed * Time.deltaTime);
+        float zoomAmount = 2f;
+        targetOrthographicSize += -Input.mouseScrollDelta.y* zoomAmount;
 
-        targetOrthographicSize += -Input.mouseScrollDelta.y;
+        float minOrthographicSize = 10f;
+        float maxOrthographicSize = 30f;
 
-        targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minSize, maxSize);
-        orthographicSize = Mathf.Lerp(orthographicSize, targetOrthographicSize, Time.deltaTime * zoomSpeed);
-         
-        vCam.m_Lens.OrthographicSize = orthographicSize;
+        targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minOrthographicSize, maxOrthographicSize);
+
+        float zoomSpeed = 5f;
+        orthographicSize = Mathf.Lerp(orthographicSize, targetOrthographicSize, Time.deltaTime* zoomSpeed);
+
+        cinemachineVirtualCamera.m_Lens.OrthographicSize = orthographicSize;
+
     }
 }
