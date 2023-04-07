@@ -42,6 +42,11 @@ public class EnemyWaveManager : MonoBehaviour
         nextWaveSpawnTimer = 3f;
     }
 
+    public Vector3 GetSpawnPosition()
+    {
+        return spawnPos;
+    }
+
     private void SetSpawnPos()
     {
         spawnPos = spawnPointList[UnityEngine.Random.Range(0, spawnPointList.Count)].position;
