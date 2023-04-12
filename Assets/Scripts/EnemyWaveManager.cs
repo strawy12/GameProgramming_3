@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class EnemyWaveManager : MonoBehaviour
 {
+    public static EnemyWaveManager Instance { get; private set; }
+
     public event EventHandler OnWaveNumberChanged;
     private float nextWaveSpawnTimer;
 
@@ -34,6 +36,11 @@ public class EnemyWaveManager : MonoBehaviour
     }
 
     private State currentState;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {

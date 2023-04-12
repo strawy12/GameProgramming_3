@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using Unity.VisualScripting;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -29,7 +30,16 @@ public class BuildingManager : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+
+        hqBuilding.GetComponent<HealthSystem>().OnDied += HQ_OnDied;
     }
+
+    private void HQ_OnDied(object sender, EventArgs e)
+    {
+        SoundManager.Instance.PlaySound(SoundManager.Sound.GameOver);
+        GameOverUI.Instance.Show();
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -42,6 +52,7 @@ public class BuildingManager : MonoBehaviour
                         ResourceManager.Instance.SpendResources(activeBuildingType.constructionCostArray);
                         // Instantiate(activeBuildingType.prefab, UtilClass.GetMouseWorldPosition(), Quaternion.identity);
                         BuildingConstruction.Create(UtilClass.GetMouseWorldPosition(), activeBuildingType);
+                        SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingPlaced);
                     }
                     else
                     {
