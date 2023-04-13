@@ -44,12 +44,19 @@ public class Building : MonoBehaviour
     {
         SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingDamaged);
         ShowBuildingRepairBtn();
+        CinemachineShake.Instance.ShakeCamera(7f, .15f);
+        ChromaticAberrationEffect.Instance.SetWeight(1f);
+
     }
 
     private void HealthSystem_OnDied(object sender, System.EventArgs e)
     {
-        SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingDestroyed);
+        Instantiate(GameAssets.Instance.pfBuildingDestroyParticlse, transform.position, Quaternion.identity);
         Destroy(gameObject);
+        SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingDestroyed);
+        CinemachineShake.Instance.ShakeCamera(10f, .2f);
+        ChromaticAberrationEffect.Instance.SetWeight(1f);
+
     }
 
     private void OnMouseEnter()
