@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class EnemyWaveUI : MonoBehaviour
 {
+
+    float commonPosy = -300f;
     [SerializeField]
     private EnemyWaveManager enemyWaveManager;
 
@@ -89,7 +91,7 @@ public class EnemyWaveUI : MonoBehaviour
         {
             Vector3 dirToClosetEnemy = (enemyWaveManager.GetSpawnPosition() - mainCam.transform.position).normalized;
 
-            enemyClosestPositionIndicator.anchoredPosition = dirToClosetEnemy * 300f;
+            enemyClosestPositionIndicator.anchoredPosition = dirToClosetEnemy * 250f;
             enemyClosestPositionIndicator.eulerAngles = new Vector3(0, 0, UtilClass.GetAngleFromVector(dirToClosetEnemy));
 
             float distToClosetEnemy = Vector3.Distance(enemyWaveManager.GetSpawnPosition(), mainCam.transform.position);
