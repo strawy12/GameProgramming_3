@@ -20,6 +20,8 @@ public class BuildingManager : MonoBehaviour
     private BuildingTypeListSO buildingTypeList;
     private BuildingTypeSO activeBuildingType;
     private Camera mainCamera;
+    public BuildingTypeListSO BuildingTypeList => buildingTypeList;
+
     private void Awake()
     {
         Instance = this;

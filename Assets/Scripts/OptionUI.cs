@@ -52,9 +52,10 @@ public class OptionUI : MonoBehaviour
     private void Start()
     {
         UpdateText();
+        transform.Find("edgeScrollingToggle").GetComponent<Toggle>().SetIsOnWithoutNotify(CameraHandler.Instance.GetEdgeScrolling());
+
         gameObject.SetActive(false);
 
-        transform.Find("edgeScrollingToggle").GetComponent<Toggle>().SetIsOnWithoutNotify(CameraHandler.Instance.GetEdgeScrolling());
     }
 
     private void UpdateText()
