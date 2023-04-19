@@ -25,7 +25,7 @@ public class BuildingTypeSelectUI : MonoBehaviour
         arrowBtn = Instantiate(btnTemplate, transform);
         arrowBtn.gameObject.SetActive(true);
 
-        float offsetAmount = +130f;
+        float offsetAmount = +100f;
         arrowBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(offsetAmount * index, 0);
 
         arrowBtn.Find("image").GetComponent<Image>().sprite = sprite;

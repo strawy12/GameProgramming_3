@@ -24,8 +24,6 @@ public class BuildingManager : MonoBehaviour
     {
         Instance = this;
         buildingTypeList = Resources.Load<BuildingTypeListSO>(typeof(BuildingTypeListSO).Name);
-        
-
     }
     private void Start()
     {
@@ -50,7 +48,6 @@ public class BuildingManager : MonoBehaviour
                     if (ResourceManager.Instance.CanAfford(activeBuildingType.constructionCostArray))
                     {
                         ResourceManager.Instance.SpendResources(activeBuildingType.constructionCostArray);
-                        // Instantiate(activeBuildingType.prefab, UtilClass.GetMouseWorldPosition(), Quaternion.identity);
                         BuildingConstruction.Create(UtilClass.GetMouseWorldPosition(), activeBuildingType);
                         SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingPlaced);
                     }
@@ -115,7 +112,7 @@ public class BuildingManager : MonoBehaviour
 
             if(nearbyResourceAmount == 0)
             {
-                errorMessage = "리소스 노드 없ㅇ므'";
+                errorMessage = "리소스 노드 없음";
                 return false;
             }
         }
