@@ -70,7 +70,8 @@ public class Tower : MonoBehaviour
 
             if (targetEnemy != null)
             {
-                ArrowProjectile.Create(projectileSpawnPosition, targetEnemy);
+                int damageAmount = (int)Mathf.Pow(1.5f, StarForceUI.Inst.GetLevel("Tower")) * 10;
+                ArrowProjectile.Create(projectileSpawnPosition, targetEnemy, damageAmount);
             }
         }
     }

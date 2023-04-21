@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class ResourceGenerator : MonoBehaviour
 {
@@ -31,10 +32,26 @@ public class ResourceGenerator : MonoBehaviour
     private float timerMax;
     private ResourceGeneratorData resourceGeneratorData;
 
+
     private void Awake()
     {
-        resourceGeneratorData = GetComponent<BuildingTypeHolder>().buildingType.resourceGeneratorData;
+        BuildingTypeSO type = GetComponent<BuildingTypeHolder>().buildingType;
+        resourceGeneratorData = type.resourceGeneratorData;
         timerMax = resourceGeneratorData.timerMax;
+
+        type.OnChangeResourceGenerateTime += ChangeTimeMax;
+    }
+
+    private void ChangeTimeMax()
+    {
+        int nearbyResourceAmount = GetNearbyResourceAmount(resourceGeneratorData, transform.position);
+        if (nearbyResourceAmount == 0) return;
+
+        timerMax = (resourceGeneratorData.timerMax / 2) +
+                resourceGeneratorData.timerMax *
+                (1 - (float)nearbyResourceAmount / resourceGeneratorData.maxResourceAmount);
+
+        timer = 0f;
     }
     private void Start()
     {
@@ -49,8 +66,8 @@ public class ResourceGenerator : MonoBehaviour
         else
         {
             timerMax = (resourceGeneratorData.timerMax / 2) +
-                resourceGeneratorData.timerMax *
-                (1 - (float)nearbyResourceAmount / resourceGeneratorData.maxResourceAmount);
+        resourceGeneratorData.timerMax *
+        (1 - (float)nearbyResourceAmount / resourceGeneratorData.maxResourceAmount);
         }
 
     }

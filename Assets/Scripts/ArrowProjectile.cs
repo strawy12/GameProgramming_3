@@ -11,13 +11,15 @@ public class ArrowProjectile : MonoBehaviour
     private Enemy targetEnemy;
     private Vector3 lastMoveDir;
     private float timeToDie = 2f;
+    private int damageAmount;
 
-    public static ArrowProjectile Create(Vector3 position, Enemy enemy)
+    public static ArrowProjectile Create(Vector3 position, Enemy enemy, int damageAmount)
     {
         Transform pfArrowProjectile = GameAssets.Instance.pfArrowProjectile;
         Transform arrowTransform = Instantiate(pfArrowProjectile, position, Quaternion.identity);
 
         ArrowProjectile arrow = arrowTransform.GetComponent<ArrowProjectile>();
+        arrow.damageAmount = damageAmount;
         arrow.SetTarget(enemy);
 
         return arrow;
@@ -59,7 +61,6 @@ public class ArrowProjectile : MonoBehaviour
 
         if(enemy !=null)
         {
-            int damageAmount = 10;
             enemy.GetComponent<HealthSystem>().Damage(damageAmount);
 
             Destroy(gameObject);

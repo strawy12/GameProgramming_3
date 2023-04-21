@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 2380460491023857303}
   - component: {fileID: 2751092663331754268}
   - component: {fileID: 5719699444616088260}
-  - component: {fileID: 6976957959903290594}
+  - component: {fileID: 7596751497320360830}
   m_Layer: 5
   m_Name: pfBuildingRepairBtn
   m_TagString: Untagged
@@ -316,7 +316,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6976957959903290594
+--- !u!114 &7596751497320360830
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7311919439306515584}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91bf3e5110bb11b49a5b6a0a2aebb0b9, type: 3}
+  m_Script: {fileID: 11500000, guid: dd3eb79238dc2b24b911f0cb87027f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   healthSystem: {fileID: 0}

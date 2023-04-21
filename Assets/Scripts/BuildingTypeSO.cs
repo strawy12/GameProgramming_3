@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,21 @@ public class BuildingTypeSO : ScriptableObject
 
     public float constructionTimerMax;
 
+    public Action OnChangeMaxHealth;
+    public Action OnChangeResourceGenerateTime;
+
+    public void ChangeMaxHealth(int amount)
+    {
+        healthAmountMax = amount;
+        OnChangeMaxHealth?.Invoke();
+    }
+
+    public void ChangeResourceGenerateTime(float amount)
+    {
+        resourceGeneratorData.timerMax = amount;
+        OnChangeResourceGenerateTime?.Invoke();
+    }
+
     public string GetConstructionCostString()
     {
         string str = "";
@@ -29,4 +45,5 @@ public class BuildingTypeSO : ScriptableObject
 
         return str;
     }
+
 }

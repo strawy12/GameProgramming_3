@@ -9,6 +9,8 @@ public class Building : MonoBehaviour
     private HealthSystem healthSystem;
     private BuildingTypeSO buildingType;
 
+    public BuildingTypeSO BuildingType => buildingType;
+
     private Transform buildingDemolishBtn;
     private Transform buildingRepairBtn;
 
@@ -26,6 +28,7 @@ public class Building : MonoBehaviour
         buildingType = GetComponent<BuildingTypeHolder>().buildingType;
 
         healthSystem.SetHealthAmountMax(buildingType.healthAmountMax, true);
+        buildingType.OnChangeMaxHealth += () => healthSystem.SetHealthAmountMax(buildingType.healthAmountMax, false);
         healthSystem.OnDied += HealthSystem_OnDied;
 
         healthSystem.OnDamaged += HealthSystem_OnDamaged;
