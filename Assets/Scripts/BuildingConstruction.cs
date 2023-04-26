@@ -15,6 +15,8 @@ public class BuildingConstruction : MonoBehaviour
 
     private Material currentMat;
 
+    private static int idx = 0;
+
 
     public static BuildingConstruction Create(Vector3 position, BuildingTypeSO type)
     {
@@ -47,9 +49,10 @@ public class BuildingConstruction : MonoBehaviour
 
         if (constructionTimer <= 0f)
         {
-            Debug.Log("Ding!");
-            Instantiate(buildingType.prefab, transform.position, Quaternion.identity);
+            Transform building = Instantiate(buildingType.prefab, transform.position, Quaternion.identity);
             Instantiate(GameAssets.Instance.pfBuildingPlacedParticles, transform.position, Quaternion.identity);
+            building.gameObject.name = idx.ToString();
+            idx++;
 
             SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingDamaged);
             Destroy(gameObject);

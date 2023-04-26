@@ -16,6 +16,10 @@ public class SoundManager : MonoBehaviour
         EnemyDie,
         EnemyHit,
         GameOver,
+        StarForce,
+        Success,
+        Failed,
+        Destroy,
     }
 
     private AudioSource audioSource;

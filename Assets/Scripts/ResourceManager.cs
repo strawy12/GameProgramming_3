@@ -11,6 +11,9 @@ public class ResourceManager : MonoBehaviour
     [SerializeField]
     private List<ResourceAmount> startingResourceAmountList;
 
+    [SerializeField]
+    private int addAmount = 100;
+
 
     public static ResourceManager Instance { get; private set; }
     public event EventHandler onResourceAmountChanged;
@@ -33,22 +36,22 @@ public class ResourceManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ResourceTypeListSO resourceTypeList = Resources.Load<ResourceTypeListSO>(typeof(ResourceTypeListSO).Name);
-            AddResource(resourceTypeList.list[2], 1);
+            AddResource(resourceTypeList.list[0], addAmount);
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             ResourceTypeListSO resourceTypeList = Resources.Load<ResourceTypeListSO>(typeof(ResourceTypeListSO).Name);
-            AddResource(resourceTypeList.list[1], 1);
+            AddResource(resourceTypeList.list[1], addAmount);
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             ResourceTypeListSO resourceTypeList = Resources.Load<ResourceTypeListSO>(typeof(ResourceTypeListSO).Name);
-            AddResource(resourceTypeList.list[0], 1);
+            AddResource(resourceTypeList.list[2], addAmount);
         }
     }
    

@@ -16,11 +16,12 @@ MonoBehaviour:
   prefab: {fileID: 1408821615164462412, guid: cbef2f996308f6847b3786a571ed1fac, type: 3}
   hasResourceGeneratorData: 0
   resourceGeneratorData:
-    timerMax: 0
+    timerMax: 1
     resourceType: {fileID: 0}
     resourceDetectionRadius: 0
     maxResourceAmount: 0
-  sprite: {fileID: 21300000, guid: 3a549cd61f4d79e4b996c9978dac641f, type: 3}
+  sprite: {fileID: 1226234987, guid: 3a549cd61f4d79e4b996c9978dac641f, type: 3}
+  destroySprite: {fileID: 1383658584, guid: 3a549cd61f4d79e4b996c9978dac641f, type: 3}
   minConstructionRadius: 7
   constructionCostArray:
   - resourceType: {fileID: 11400000, guid: fa65348b49250d5429f697fb4ec06150, type: 2}
@@ -28,4 +29,4 @@ MonoBehaviour:
   - resourceType: {fileID: 11400000, guid: 84bfc8e2df0da2840be05ab5a0b862d2, type: 2}
     amount: 30
   healthAmountMax: 100
-  constructionTimerMax: 5
+  constructionTimerMax: 3

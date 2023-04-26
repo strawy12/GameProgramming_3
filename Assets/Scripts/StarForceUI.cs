@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Cinemachine.DocumentationSortingAttribute;
+using Random = UnityEngine.Random;
 
 [System.Serializable]
 public class UpgradePercent
@@ -29,12 +32,26 @@ public class StarForceUI : MonoBehaviour
     private TMP_Text needGoldText;
 
     [SerializeField]
+    private StarforceResultPanel starforceResultPanel;
+
+    [SerializeField]
+    private ResourceTypeSO goldResourceType;
+
+    [SerializeField]
     private List<UpgradePercent> upgradePercentList;
 
     [SerializeField]
     private Animator effectAnim;
 
     private bool isUpgrading = false;
+    private int needGold = 0;
+
+    private const string SUCCESS_TEXT = "타워 강화에 <color=#BBEE00>성공</color>하였습니다.";
+    private const string FAILED_TEXT = "타워 강화에 <color=#D23B27>실패</color>하였습니다.";
+    private const string FAILED_DOWN_TEXT = "타워 강화에 <color=#D23B27>실패</color>하여 강화 단계가 <color=#D23B27>하락</color>하였습니다.";
+    private const string DESTROY_TEXT = "타워 강화에 <color=#000000>실패</color>하여 타워가 <color=#000000  >파괴</color>하였습니다.";
+
+    private int failedCount = 0;
 
     private void Awake()
     {
@@ -46,28 +63,36 @@ public class StarForceUI : MonoBehaviour
 
     private void Start()
     {
-        foreach (var buildingType in BuildingManager.Instance.BuildingTypeList.list)
-        {
-            buildingLevelList.Add(buildingType.nameString, 1);
-        }
-
         transform.Find("UpgradeButton").GetComponent<Button>().onClick.AddListener(ClickUpgradeBtn);
         transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ClickCancelBtn);
     }
+
+    public void AddBuilding(string name)
+    {
+        buildingLevelList.Add(name, 1);
+    }
+
     private void ClickCancelBtn()
     {
+        Time.timeScale = 1f;
         gameObject.SetActive(false);
     }
 
     private async void ClickUpgradeBtn()
     {
+        if (needGold > ResourceManager.Instance.GetResouceAmount(goldResourceType))
+            return;
+
         if (isUpgrading) return;
+
+        ResourceManager.Instance.AddResource(goldResourceType, -needGold);
+
+        SoundManager.Instance.PlaySound(SoundManager.Sound.StarForce);
         isUpgrading = true;
         effectAnim.gameObject.SetActive(true);
         effectAnim.Play("Effect");
 
-        await Task.Delay(1600);
-        isUpgrading = false;
+        await Task.Delay(2700);
         effectAnim.StopPlayback();
         effectAnim.gameObject.SetActive(false);
 
@@ -77,70 +102,100 @@ public class StarForceUI : MonoBehaviour
 
         int randomNum = Random.Range(0, 100);
 
-        if(randomNum < percentData.successPecent)
+        if (randomNum < percentData.successPecent)
         {
-            Debug.Log("성공!");
-            buildingLevelList[BuildingType.nameString]++;
+            SoundManager.Instance.PlaySound(SoundManager.Sound.Success);
             Success();
         }
 
-        else if(randomNum < percentData.successPecent + percentData.failPercent)
+        else if (randomNum < percentData.successPecent + percentData.failPercent)
         {
-            Debug.Log("실패!");
+            SoundManager.Instance.PlaySound(SoundManager.Sound.Failed);
             Fail();
         }
 
         else
         {
-            Debug.Log("파괴");
+            SoundManager.Instance.PlaySound(SoundManager.Sound.Destroy);
             Destroy();
         }
 
+        isUpgrading = false;
         SetInfoText();
     }
     private void Success()
     {
+        starforceResultPanel.Open(BuildingType, SUCCESS_TEXT, false);
+        buildingLevelList[currentBuilding.name]++;
+
         switch (BuildingType.nameString)
         {
             case "GoldHarvester":
             case "StoneHarvester":
             case "WoodHarvester":
                 {
-                    float resourceTime = (1.5f * Mathf.Pow(0.9f, GetLevel(BuildingType.nameString)));
+                    int level = GetLevel(currentBuilding.name);
+                    float resourceTime = level == 1 ? 1f : (1f * Mathf.Pow(0.9f, level));
                     BuildingType.ChangeResourceGenerateTime(resourceTime);
                     break;
                 }
         }
-        int maxHealth = (int)(100f * Mathf.Pow(1.1f, GetLevel(BuildingType.nameString)));
+        int maxHealth = (int)(100f * Mathf.Pow(1.1f, GetLevel(currentBuilding.name)));
         BuildingType.ChangeMaxHealth(maxHealth);
     }
 
     private void Fail()
     {
-        int level = GetLevel(BuildingType.nameString);
+        int level = GetLevel(currentBuilding.name);
+        failedCount++;
         if (level > 15 && level != 20)
         {
-            buildingLevelList[BuildingType.nameString]--;
+            starforceResultPanel.Open(BuildingType, FAILED_DOWN_TEXT, false);
+            buildingLevelList[currentBuilding.name]--;
+            switch (BuildingType.nameString)
+            {
+                case "GoldHarvester":
+                case "StoneHarvester":
+                case "WoodHarvester":
+                    {
+                        float resourceTime = level == 1 ? 1f : (1f * Mathf.Pow(0.9f, level));
+                        BuildingType.ChangeResourceGenerateTime(resourceTime);
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            starforceResultPanel.Open(BuildingType, FAILED_TEXT, false);
         }
     }
 
     private void Destroy()
     {
-        if(BuildingType.nameString == "HQ")
+        starforceResultPanel.Open(BuildingType, DESTROY_TEXT, true);
+        starforceResultPanel.OnClose += () =>
         {
-            buildingLevelList[BuildingType.nameString] = 1;
-        }
+            BuildingType.ChangeResourceGenerateTime(1f);
+            buildingLevelList[currentBuilding.name] = 1;
+            starforceResultPanel.OnClose = null;
+            Destroy(currentBuilding.gameObject);
+            gameObject.SetActive(false);
+        };
 
-        Destroy(currentBuilding.gameObject);
-        gameObject.SetActive(false);
+        if (currentBuilding.name == "HQ")
+        {
+            buildingLevelList[currentBuilding.name] = 1;
+        }
     }
 
     public void Open(Building building)
     {
         Time.timeScale = 0f;
+        failedCount = 0;
         currentBuilding = building;
-        SetSprite(buildingImage, BuildingType.sprite, new Vector2(165,165));
+        SetSprite(buildingImage, BuildingType.sprite, new Vector2(165, 165));
         SetInfoText();
+
         gameObject.SetActive(true);
     }
 
@@ -165,8 +220,9 @@ public class StarForceUI : MonoBehaviour
 
     private void SetInfoText()
     {
-        int level = GetLevel(BuildingType.nameString);
-        if(level >= 25)
+        int level = GetLevel(currentBuilding.name);
+
+        if (level >= 25)
         {
             Debug.Log("만렙");
             return;
@@ -174,32 +230,67 @@ public class StarForceUI : MonoBehaviour
 
         UpgradePercent percent = GetUpgradePercent(level);
 
-        float[] statAmounts = GetStatAmount(BuildingType.nameString);
+        float[] statAmounts = GetStatAmount(currentBuilding.name,BuildingType);
         string[] statNames = GetStatString(BuildingType.nameString);
         if (statNames == null) return;
         if (statNames == null) return;
 
         upgradeInfoText.text = $"{level}성 > {level + 1}성\n성공확률: {percent.successPecent:0.00}%\n실패({(level > 15 && level != 20 ? "하락" : "유지")})확률: {percent.failPercent:0.00}%\n{(level >= 15 ? $"파괴확률: {percent.destroyPercent:0.00}%\n" : "")}\n{statNames[0]}: {statAmounts[0]:00.00}\n{statNames[1]} : {statAmounts[1]:00.00}";
+
+        needGold = level == 1 ? 10 : (int)(10 * (1.25f * level));
+        needGoldText.text = string.Format("{0:#,###}", needGold);
+
     }
 
     public UpgradePercent GetUpgradePercent(int idx = -1)
     {
+        if(failedCount > 2)
+        {
+            return new UpgradePercent { successPecent = 100, destroyPercent = 0, failPercent = 0 };
+        }
         if (idx < 0)
         {
-            idx = GetLevel(BuildingType.nameString) - 1;
+            idx = GetLevel(currentBuilding.name) - 1;
         }
         return upgradePercentList[idx];
     }
 
-    public float[] GetStatAmount(string buildingName)
+    public string GetStatText(string buildingName, BuildingTypeSO type)
     {
-        int maxHealth = (int)(100f * Mathf.Pow(1.1f, GetLevel(buildingName)));
-        switch (buildingName)
+        int level = GetLevel(buildingName);
+        int maxHP = level == 1 ? 100 : (int)(100f * Mathf.Pow(1.1f, level));
+        switch (type.nameString)
         {
             case "Tower":
             case "HQ":
                 {
-                    int damageAmount = (int)(10f * Mathf.Pow(1.1f, GetLevel(buildingName)));
+                    int damageAmount = level == 1 ? 10 : (int)(10f * Mathf.Pow(1.1f, level));
+                    return $"<color=#FF0000>MAXHP:</color> {maxHP}\n<color=#00FF00>ATK:</color> {damageAmount}";
+                }
+
+            case "GoldHarvester":
+            case "StoneHarvester":
+            case "WoodHarvester":
+                {
+                    float resourceTime = level == 1 ? 1f : (1f * Mathf.Pow(0.9f, level));
+                    return $"<color=#FF0000>MAXHP:</color> {maxHP}\n<color=#00FF00>RESOURCE TIME:</color> {resourceTime:0.00}";
+                }
+
+        }
+        return null;
+    }
+
+    public float[] GetStatAmount(string buildingName, BuildingTypeSO type)
+    {
+        int level = GetLevel(buildingName);
+        int maxHealth = level == 1? 100 : (int)(100f * Mathf.Pow(1.1f, level));
+
+        switch (type.nameString)
+        {
+            case "Tower":
+            case "HQ":
+                {
+                    int damageAmount = level == 1 ? 10 : (int)(10f * Mathf.Pow(1.1f, level));
                     return new float[] { maxHealth, damageAmount };
                 }
 
@@ -207,7 +298,7 @@ public class StarForceUI : MonoBehaviour
             case "StoneHarvester":
             case "WoodHarvester":
                 {
-                    float resourceTime = (1.5f * Mathf.Pow(0.9f, GetLevel(buildingName)));
+                    float resourceTime = level == 1 ? 1f : (1f * Mathf.Pow(0.9f, level));
                     return new float[] { maxHealth, resourceTime };
                 }
         }

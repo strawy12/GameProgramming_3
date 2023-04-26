@@ -12,6 +12,7 @@ public class BuildingTypeSO : ScriptableObject
 
     public ResourceGeneratorData resourceGeneratorData;
     public Sprite sprite;
+    public Sprite destroySprite;
     public float minConstructionRadius;
     public ResourceAmount[] constructionCostArray;
     public int healthAmountMax;

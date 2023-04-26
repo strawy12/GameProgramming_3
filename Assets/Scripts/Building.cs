@@ -9,6 +9,9 @@ public class Building : MonoBehaviour
     private HealthSystem healthSystem;
     private BuildingTypeSO buildingType;
 
+    [SerializeField]
+    private StarUI starUI;
+
     public BuildingTypeSO BuildingType => buildingType;
 
     private Transform buildingDemolishBtn;
@@ -24,6 +27,8 @@ public class Building : MonoBehaviour
 
     private void Start()
     {
+        StarForceUI.Inst.AddBuilding(gameObject.name);
+
         healthSystem = GetComponent<HealthSystem>();
         buildingType = GetComponent<BuildingTypeHolder>().buildingType;
 
@@ -33,6 +38,8 @@ public class Building : MonoBehaviour
 
         healthSystem.OnDamaged += HealthSystem_OnDamaged;
         healthSystem.OnHealed += HealthSystem_OnHealed;
+
+        buildingType = Instantiate(buildingType);
     }
 
     private void HealthSystem_OnHealed(object sender, EventArgs e)
@@ -55,22 +62,40 @@ public class Building : MonoBehaviour
     private void HealthSystem_OnDied(object sender, System.EventArgs e)
     {
         Instantiate(GameAssets.Instance.pfBuildingDestroyParticlse, transform.position, Quaternion.identity);
-        Destroy(gameObject);
         SoundManager.Instance.PlaySound(SoundManager.Sound.BuildingDestroyed);
         CinemachineShake.Instance.ShakeCamera(10f, .2f);
         ChromaticAberrationEffect.Instance.SetWeight(1f);
 
+
+        Destroy(gameObject);
     }
 
     private void OnMouseEnter()
     {
+        ShowStar();
         ShowBuildingDemolishBtn();
 
     }
 
+   
+
     private void OnMouseExit()
     {
+        HideStar();
         HideBuildingDemolishBtn();
+    }
+
+    private void ShowStar()
+    {
+        int level = StarForceUI.Inst.GetLevel(gameObject.name);
+        string text = StarForceUI.Inst.GetStatText(gameObject.name, BuildingType);
+        starUI.gameObject.SetActive(true);
+        starUI.Open(level, text);
+    }
+
+    private void HideStar()
+    {
+        starUI.gameObject.SetActive(false);
     }
 
     private void ShowBuildingDemolishBtn()

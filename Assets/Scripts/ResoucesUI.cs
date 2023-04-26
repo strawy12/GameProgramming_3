@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class ResoucesUI : MonoBehaviour
 {
     private ResourceTypeListSO resourceTypeList;
+    [SerializeField]
+    [Tooltip("Wood Stone Gold 순으로 두기")]
+    private List<Transform> resourceTransformList;
     private Dictionary<ResourceTypeSO, Transform> resourceTransformDictionary;
 
     private void Awake()
@@ -14,23 +18,12 @@ public class ResoucesUI : MonoBehaviour
         resourceTypeList = Resources.Load<ResourceTypeListSO>(typeof(ResourceTypeListSO).Name);
         resourceTransformDictionary = new Dictionary<ResourceTypeSO, Transform>();
 
-        Transform resourceTemplate = transform.Find("resourceTemplate");
-        resourceTemplate.gameObject.SetActive(false);
-
-        int index = 0;
-        foreach(ResourceTypeSO resourceType in resourceTypeList.list)
+        for(int i = 0; i < 3; i++)
         {
-            Transform resourceTransform = Instantiate(resourceTemplate, transform);
-            resourceTransform.gameObject.SetActive(true);
+            ResourceTypeSO type = resourceTypeList.list[i];
+            Transform trm = resourceTransformList[i];
 
-            float offsetAmount = -160f;
-            resourceTransform.GetComponent<RectTransform>().anchoredPosition = new Vector2(offsetAmount*index, 0);
-
-            resourceTransform.Find("image").GetComponent<Image>().sprite = resourceType.sprite;
-
-            resourceTransformDictionary[resourceType] = resourceTransform;
-
-            index++;
+            resourceTransformDictionary.Add(type, trm);
         }
     }
     private void Start()
