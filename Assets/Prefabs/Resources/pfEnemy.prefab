@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 3047712418979147164}
   - component: {fileID: 4044290960467861546}
   - component: {fileID: 1392983018821430771}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pfEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6994529248690291878}
   - component: {fileID: 1900038813471950049}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: minimapIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -440,6 +440,34 @@ PrefabInstance:
     - target: {fileID: 4237741380287030543, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
       propertyPath: m_Name
       value: pfHealthbar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237741380287030543, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4888330317236617910, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5682242381825891913, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281703221707413164, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6391918778962498491, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546371406645737301, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7402815835881996125, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8575848980918675451, guid: f4ffba9dad96c4540ae7903e19d0837b, type: 3}
       propertyPath: m_RootOrder

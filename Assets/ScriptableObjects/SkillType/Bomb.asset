@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Bomb
   m_EditorClassIdentifier: 
   nameString: Bomb
-  prefab: {fileID: 0}
-  sprite: {fileID: 0}
+  Info: "\uC8FC\uBCC0 \uC801\uB4E4\uC744 \uD3ED\uBC1C\uC2DC\uD0A8\uB2E4"
+  prefab: {fileID: 7864439438791569331, guid: 9766fab1fe5a77d4dac51d6f1fc1b194, type: 3}
+  sprite: {fileID: 21300000, guid: 2f96e3f5defcc994698d726afbb8b9a3, type: 3}
   constructionCostArray:
   - resourceType: {fileID: 11400000, guid: fa65348b49250d5429f697fb4ec06150, type: 2}
     amount: 20
   isnotUseCost: 0
   isUseWorld: 1
+  isBoost: 0
   constructionTimerMax: 0

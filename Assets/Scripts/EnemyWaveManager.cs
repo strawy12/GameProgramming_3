@@ -87,7 +87,7 @@ public class EnemyWaveManager : MonoBehaviour
                         {
                             currentState = State.WaitingToSpawnNextWave;
                             SetSpawnPos();
-                            nextWaveSpawnTimer = 10f;
+                            nextWaveSpawnTimer = 3f;
                         }
                     }
                 }

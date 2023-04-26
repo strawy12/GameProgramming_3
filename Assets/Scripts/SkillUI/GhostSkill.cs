@@ -4,15 +4,48 @@ using UnityEngine;
 
 public class GhostSkill : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private SpriteRenderer sRenderer;
+    private SkillTypeSO ActiveSkill;
+    Camera cam;
+
+    private void Start()
     {
-        
+        ActiveSkill = SkillManager.Instance.GetActiveSkillType();
+        sRenderer = GetComponent<SpriteRenderer>();
+        cam = Camera.main;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void InitSkill()
     {
-        
+        ActiveSkill = SkillManager.Instance.GetActiveSkillType();
+        SetSprite();
+        SetPos();
+        SetScale();
+    }
+
+    private void Update()
+    {
+        SetPos();
+    }
+
+    public void SetSprite()
+    {
+        if (ActiveSkill.isUseWorld)
+        {
+            sRenderer.sprite = ActiveSkill.sprite;
+        }
+    }
+
+    void SetPos()
+    {
+        Vector2 setPos = cam.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = setPos;
+    }
+
+
+    void SetScale()
+    {
+        float scale = SkillManager.Instance.activeSkill.GetSkillScale();
+        sRenderer.size = new Vector2(scale, scale);
     }
 }

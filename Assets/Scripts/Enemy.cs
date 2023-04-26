@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     private float lookForTimer;
     private float lookForTimerMax = .2f;
 
-    private HealthSystem healthSystem;
+    public HealthSystem healthSystem;
 
 
     private void Awake()
@@ -31,7 +31,6 @@ public class Enemy : MonoBehaviour
     private void HealthSystem_OnDamaged(object sender, System.EventArgs e)
     {
         SoundManager.Instance.PlaySound(SoundManager.Sound.EnemyHit);
-        Debug.Log(CinemachineShake.Instance);
         CinemachineShake.Instance.ShakeCamera(5f, .1f);
         ChromaticAberrationEffect.Instance.SetWeight(.5f);
 
@@ -53,6 +52,7 @@ public class Enemy : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundManager.Sound.EnemyDie);
         CinemachineShake.Instance.ShakeCamera(7f, .15f);
         ChromaticAberrationEffect.Instance.SetWeight(.5f);
+        //ResourceManager.Instance.AddResource( ,1)
 
         Instantiate(GameAssets.Instance.pfEnemyDieParticles, transform.position, Quaternion.identity);
         Destroy(gameObject);

@@ -6,12 +6,14 @@ using UnityEngine;
 public class SkillTypeSO : ScriptableObject
 {
     public string nameString;
-    public Transform prefab;
+    public string Info;
+    public GameObject prefab;
 
     public Sprite sprite;
     public ResourceAmount[] constructionCostArray;
     public bool isnotUseCost;
     public bool isUseWorld;
+    public bool isBoost;
 
     public float constructionTimerMax;
 
@@ -25,7 +27,7 @@ public class SkillTypeSO : ScriptableObject
             {
                 str += "<color=#" + resourceAmount.resourceType.colorHex + ">" +
                     resourceAmount.resourceType.nameShort + resourceAmount.amount
-                    + "</color>";
+                    + "</color>" + "\n" + Info;
             }
         }
 
