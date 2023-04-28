@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Cinemachine.DocumentationSortingAttribute;
@@ -32,10 +33,21 @@ public class StarForceUI : MonoBehaviour
     private TMP_Text needGoldText;
 
     [SerializeField]
+    private TMP_Text upgradeTitleText;
+
+    [SerializeField]
     private StarforceResultPanel starforceResultPanel;
 
     [SerializeField]
     private ResourceTypeSO goldResourceType;
+
+    [SerializeField]
+    private Toggle destroyProctedToggle;
+
+    [SerializeField]
+    private Toggle starCatchToggle;
+
+
 
     [SerializeField]
     private List<UpgradePercent> upgradePercentList;
@@ -63,9 +75,12 @@ public class StarForceUI : MonoBehaviour
 
     private void Start()
     {
-        transform.Find("UpgradeButton").GetComponent<Button>().onClick.AddListener(ClickUpgradeBtn);
+        transform.Find("UpgradeButton").GetComponent<Button>().onClick.AddListener(() => StartCoroutine(ClickUpgradeBtn()));
         transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ClickCancelBtn);
+
+        destroyProctedToggle.onValueChanged.AddListener((b) => SetUI());
     }
+
 
     public void AddBuilding(string name)
     {
@@ -78,27 +93,29 @@ public class StarForceUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private async void ClickUpgradeBtn()
+    private IEnumerator ClickUpgradeBtn()
     {
         if (needGold > ResourceManager.Instance.GetResouceAmount(goldResourceType))
-            return;
+            yield break;
 
-        if (isUpgrading) return;
+        if (isUpgrading) yield break;
+        UpgradePercent percentData = GetUpgradePercent();
 
         ResourceManager.Instance.AddResource(goldResourceType, -needGold);
+
+        if (starCatchToggle.isOn && percentData.successPecent != 100)
+        {
+            // 여기서 스타캐치
+        }
 
         SoundManager.Instance.PlaySound(SoundManager.Sound.StarForce);
         isUpgrading = true;
         effectAnim.gameObject.SetActive(true);
         effectAnim.Play("Effect");
 
-        await Task.Delay(2700);
+        yield return new WaitForSecondsRealtime(2.7f);
         effectAnim.StopPlayback();
         effectAnim.gameObject.SetActive(false);
-
-        UpgradePercent percentData = GetUpgradePercent();
-        if (percentData == null)
-            return;
 
         int randomNum = Random.Range(0, 100);
 
@@ -116,15 +133,26 @@ public class StarForceUI : MonoBehaviour
 
         else
         {
-            SoundManager.Instance.PlaySound(SoundManager.Sound.Destroy);
-            Destroy();
+            if (destroyProctedToggle.isOn)
+            {
+                SoundManager.Instance.PlaySound(SoundManager.Sound.Success);
+                Success();
+            }
+
+            else
+            {
+                SoundManager.Instance.PlaySound(SoundManager.Sound.Destroy);
+                Destroy();
+            }
         }
 
+
         isUpgrading = false;
-        SetInfoText();
+        SetUI();
     }
     private void Success()
     {
+        failedCount = 0;
         starforceResultPanel.Open(BuildingType, SUCCESS_TEXT, false);
         buildingLevelList[currentBuilding.name]++;
 
@@ -147,9 +175,10 @@ public class StarForceUI : MonoBehaviour
     private void Fail()
     {
         int level = GetLevel(currentBuilding.name);
-        failedCount++;
+
         if (level > 15 && level != 20)
         {
+            failedCount++;
             starforceResultPanel.Open(BuildingType, FAILED_DOWN_TEXT, false);
             buildingLevelList[currentBuilding.name]--;
             switch (BuildingType.nameString)
@@ -175,17 +204,24 @@ public class StarForceUI : MonoBehaviour
         starforceResultPanel.Open(BuildingType, DESTROY_TEXT, true);
         starforceResultPanel.OnClose += () =>
         {
-            BuildingType.ChangeResourceGenerateTime(1f);
-            buildingLevelList[currentBuilding.name] = 1;
+            if (BuildingType.nameString != "HQ")
+            {
+                BuildingType.ChangeResourceGenerateTime(1f);
+                buildingLevelList.Remove(currentBuilding.name);
+                Destroy(currentBuilding.gameObject);
+            }
+
+            else
+            {
+                buildingLevelList[currentBuilding.name] = 1;
+            }
+
+            Time.timeScale = 1f;
             starforceResultPanel.OnClose = null;
-            Destroy(currentBuilding.gameObject);
             gameObject.SetActive(false);
         };
 
-        if (currentBuilding.name == "HQ")
-        {
-            buildingLevelList[currentBuilding.name] = 1;
-        }
+
     }
 
     public void Open(Building building)
@@ -194,7 +230,7 @@ public class StarForceUI : MonoBehaviour
         failedCount = 0;
         currentBuilding = building;
         SetSprite(buildingImage, BuildingType.sprite, new Vector2(165, 165));
-        SetInfoText();
+        SetUI();
 
         gameObject.SetActive(true);
     }
@@ -218,9 +254,10 @@ public class StarForceUI : MonoBehaviour
         image.rectTransform.sizeDelta = size * scale;
     }
 
-    private void SetInfoText()
+    private void SetUI()
     {
         int level = GetLevel(currentBuilding.name);
+        destroyProctedToggle.interactable = 15 <= level && level < 17;
 
         if (level >= 25)
         {
@@ -230,7 +267,7 @@ public class StarForceUI : MonoBehaviour
 
         UpgradePercent percent = GetUpgradePercent(level);
 
-        float[] statAmounts = GetStatAmount(currentBuilding.name,BuildingType);
+        float[] statAmounts = GetStatAmount(currentBuilding.name, BuildingType);
         string[] statNames = GetStatString(BuildingType.nameString);
         if (statNames == null) return;
         if (statNames == null) return;
@@ -238,13 +275,42 @@ public class StarForceUI : MonoBehaviour
         upgradeInfoText.text = $"{level}성 > {level + 1}성\n성공확률: {percent.successPecent:0.00}%\n실패({(level > 15 && level != 20 ? "하락" : "유지")})확률: {percent.failPercent:0.00}%\n{(level >= 15 ? $"파괴확률: {percent.destroyPercent:0.00}%\n" : "")}\n{statNames[0]}: {statAmounts[0]:00.00}\n{statNames[1]} : {statAmounts[1]:00.00}";
 
         needGold = level == 1 ? 10 : (int)(10 * (1.25f * level));
+        needGold = (int)(needGold * (destroyProctedToggle.isOn ? 1.5f : 1));
         needGoldText.text = string.Format("{0:#,###}", needGold);
 
+        if (needGold > ResourceManager.Instance.GetResouceAmount(goldResourceType))
+        {
+            upgradeTitleText.text = "강화에 필요한 골드가 부족합니다.";
+        }
+
+        else
+        {
+            if (percent.successPecent == 100)
+            {
+                upgradeTitleText.text = "<color=#FFCC00>Chance Time!";
+            }
+
+            else if (level < 15)
+            {
+                upgradeTitleText.text = "<color=#FFCC00>골드</color>를 사용하여 타워를 강화합니다.";
+            }
+
+            else if (level == 15)
+            {
+                upgradeTitleText.text = "실패 시 장비가 <color=#FFCC00>파괴</color>될 수 있습니다.";
+            }
+
+            else if (level > 15)
+            {
+                upgradeTitleText.text = "실패 시 장비가 <color=#FFCC00>파괴</color>되거나 단계가 <color=#FFCC00>하락</color>될 수 있습니다.";
+            }
+        }
     }
+
 
     public UpgradePercent GetUpgradePercent(int idx = -1)
     {
-        if(failedCount > 2)
+        if (failedCount >= 2)
         {
             return new UpgradePercent { successPecent = 100, destroyPercent = 0, failPercent = 0 };
         }
@@ -283,7 +349,7 @@ public class StarForceUI : MonoBehaviour
     public float[] GetStatAmount(string buildingName, BuildingTypeSO type)
     {
         int level = GetLevel(buildingName);
-        int maxHealth = level == 1? 100 : (int)(100f * Mathf.Pow(1.1f, level));
+        int maxHealth = level == 1 ? 100 : (int)(100f * Mathf.Pow(1.1f, level));
 
         switch (type.nameString)
         {
