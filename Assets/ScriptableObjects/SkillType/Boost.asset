@@ -12,14 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9c35f386075204c8c2186016f08ab3, type: 3}
   m_Name: Boost
   m_EditorClassIdentifier: 
-  nameString: 
-  prefab: {fileID: 0}
-  sprite: {fileID: 0}
+  nameString: Boost
+  Info: Boost mine resources
+  prefab: {fileID: 2733247010544334549, guid: 151b338c0d34e2f4789ad0f207ca409c, type: 3}
+  sprite: {fileID: 21300000, guid: e2450080181216d4ebfafbb0e69d88e1, type: 3}
   constructionCostArray:
-  - resourceType: {fileID: 11400000, guid: fa65348b49250d5429f697fb4ec06150, type: 2}
-    amount: 30
-  - resourceType: {fileID: 11400000, guid: 84bfc8e2df0da2840be05ab5a0b862d2, type: 2}
-    amount: 30
+  - resourceType: {fileID: 11400000, guid: 76283bb12515561408e84a9ce64534cb, type: 2}
+    amount: 15
   isnotUseCost: 0
   isUseWorld: 0
   isBoost: 1

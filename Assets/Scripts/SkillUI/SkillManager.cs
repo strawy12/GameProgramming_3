@@ -69,6 +69,7 @@ public class SkillManager : MonoBehaviour
 
     public SkillTypeSO GetActiveSkillType()
     {
+        BuildingManager.Instance.SetActiveBuildingType(null);
         return activeSkillType;
     }
     public void SetActiveSkillType(SkillTypeSO type)

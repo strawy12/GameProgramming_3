@@ -4,6 +4,14 @@ using UnityEngine;
 using System;
 using UnityEngine.Lumin;
 
+public enum ResourceType
+{
+    Wood,
+    Stone,
+    Gold,
+    Soul,
+}
+
 public class ResourceManager : MonoBehaviour
 {
     private Dictionary<ResourceTypeSO, int> resourceAmountDictionary;
@@ -59,6 +67,13 @@ public class ResourceManager : MonoBehaviour
         onResourceAmountChanged?.Invoke(this, EventArgs.Empty);
         
     }
+    public void AddResource(ResourceType type, int amount)
+    {
+        ResourceTypeListSO list = Resources.Load<ResourceTypeListSO>(typeof(ResourceTypeListSO).Name);
+        AddResource(list.list[(int)type], 1);
+        onResourceAmountChanged?.Invoke(this, EventArgs.Empty);
+    }
+
 
     public int GetResouceAmount(ResourceTypeSO resourceType)
     {

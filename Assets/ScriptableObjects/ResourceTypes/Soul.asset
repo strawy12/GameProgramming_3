@@ -15,4 +15,4 @@ MonoBehaviour:
   nameString: Soul
   nameShort: G
   sprite: {fileID: 21300000, guid: 34dc07c6eb5817843a8a81caff49bb38, type: 3}
-  colorHex: 000000
+  colorHex: 010010

@@ -9,6 +9,7 @@ public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance { get; private set; }
     public event EventHandler<onActiveBuildingTypeEventArgs> onActiveBuildingTypeChanged;
+    public List<Tower> towers = new List<Tower>();
 
     public class onActiveBuildingTypeEventArgs : EventArgs
     {
@@ -28,7 +29,6 @@ public class BuildingManager : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
-
         hqBuilding.GetComponent<HealthSystem>().OnDied += HQ_OnDied;
     }
 

@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundManager.Sound.EnemyDie);
         CinemachineShake.Instance.ShakeCamera(7f, .15f);
         ChromaticAberrationEffect.Instance.SetWeight(.5f);
-        //ResourceManager.Instance.AddResource( ,1)
+        ResourceManager.Instance.AddResource(ResourceType.Soul, 1);
 
         Instantiate(GameAssets.Instance.pfEnemyDieParticles, transform.position, Quaternion.identity);
         Destroy(gameObject);

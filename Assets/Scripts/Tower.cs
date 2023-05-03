@@ -20,6 +20,11 @@ public class Tower : MonoBehaviour
         projectileSpawnPosition = transform.Find("projectileSpawnPosition").position;
     }
 
+    private void Start()
+    {
+        BuildingManager.Instance.towers.Add(this);
+    }
+
     private void Update()
     {
         HandleTargetting();
@@ -56,15 +61,17 @@ public class Tower : MonoBehaviour
                     {
                         targetEnemy = enemy;
                     }
-                } 
+                }
             }
         }
+
     }
+    public void SetTimerMax(float t) => shootTimerMax -= t;
 
     private void HandleShooting()
     {
         shootTimer -= Time.deltaTime;
-        if(shootTimer <= 0f)
+        if (shootTimer <= 0f)
         {
             shootTimer += shootTimerMax;
 

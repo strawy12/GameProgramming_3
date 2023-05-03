@@ -46,7 +46,7 @@ public class EnemyWaveManager : MonoBehaviour
     {
         currentState = State.WaitingToSpawnNextWave;
         SetSpawnPos();
-        nextWaveSpawnTimer = 3f;
+        nextWaveSpawnTimer = 2f;
     }
 
     public Vector3 GetSpawnPosition()
@@ -79,7 +79,7 @@ public class EnemyWaveManager : MonoBehaviour
 
                     if (nextEnemySpawnTimer <= 0f)
                     {
-                        nextEnemySpawnTimer = Random.Range(0f, 2f);
+                        nextEnemySpawnTimer = Random.Range(0f, 1f);
                         Enemy.Create(spawnPos + UtilClass.GetRandomDir() * Random.Range(0f, 10f));
                         remainingEnemySpawnAmount--;
 
@@ -87,7 +87,7 @@ public class EnemyWaveManager : MonoBehaviour
                         {
                             currentState = State.WaitingToSpawnNextWave;
                             SetSpawnPos();
-                            nextWaveSpawnTimer = 3f;
+                            nextWaveSpawnTimer = 2f;
                         }
                     }
                 }
